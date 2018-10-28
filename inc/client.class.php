@@ -54,22 +54,18 @@ function editClient($data)
 			$result = mysqli_query($this->connection, $q) or die(mysql_error());		
 			
 			
-			return $q;			
+			return $q;
 		
 	}	
 	
 	function viewClient($data)
 	{	
 		
-			$q = "SELECT * FROM main_list where list_id = '$data'";
-			$result = mysqli_query($this->connection, $q) or die(mysql_error());		
-			$row = mysqli_fetch_assoc($result);			
-			
-			
-			
-			return $row;			
-		
-		
+		q = "SELECT * FROM main_list where list_id = '$data'";
+		$result = mysqli_query($this->connection, $q) or die(mysql_error());		
+		$row = mysqli_fetch_assoc($result);
+
+		return $row;
 	}	
 
 	/*
