@@ -1,55 +1,51 @@
 <?php
 session_start();
 //set up includes
-include('inc/db.class.php');
-include('inc/client.class.php');
+include 'inc/db.class.php';
+include 'inc/client.class.php';
 
 //set up classes
 $db = new db();
 $client_class = new clients($db->connection);
 
-
-//login start
-if($_GET['logout_session'] == "YES") {
-		
-	session_destroy();
-	header("Location: index.php?login_error=YES");
-	
+// See if the user logged out.  Login_error=YES means show logout message.
+if ($_GET['logout_session'] == "YES") {
+    session_destroy();
+    header("Location: index.php?login_error=YES");
 }
 
-if($_POST['login_session'] == "YES") {
-	
-	$data = array();
-	$data['email'] = $_POST['l_email'];
-	$data['password'] = md5($_POST['l_password']);
-	$login_user = $client_class->getAdmin_login($data);
-	//echo $login_user['user_name'];
-	if($login_user['client_id'] >= 1) {
-		
-		$_SESSION['scout_user'] = $login_user['first_name']. " ".$login_user['last_name'];
-		$_SESSION['client_id'] = $login_user['client_id'];
-		$_SESSION['scout_session'] = "YES";
-		$login_error = "NO";
-				
-		//clean this once ready
-		header("Location: $goto_url");
-		$goto_url = "./log_home.php?page_result=$edit_done"; 
-		//exit;
-		}
-	else {
-		
-		$login_error = "YES";	
-		}
-	}
-	
-       
-//login end
+// See if the user was able to log in correctly.
+if ($_POST['login_session'] == "YES") {
+    $data = array();
+    $data['email'] = $_POST['l_email'];
+    $data['password'] = md5($_POST['l_password']);
+    $login_user = $client_class->getAdmin_login($data);
+    // $login_error flags if the user was able to login correctly or they typed something wrong.
+    if ($login_user['client_id'] >= 1) {
+        $_SESSION['scout_user'] = $login_user['first_name'] . " " . $login_user['last_name'];
+        $_SESSION['client_id'] = $login_user['client_id'];
+        $_SESSION['scout_session'] = "YES";
+        $_SESSION['role'] = $login_user['role'];
+        $login_error = "NO";
+    } else {
+        $login_error = "YES";
+    }
+}
+
+// Create message
+if ($_SESSION['scout_session'] === "YES") {
+    $message = 'Click search button to start.';
+} else {
+    $message = 'Please login to access.';
+}
 
 
-// end build list
 $main_content = "<table width='100%' class='small_text' cellpadding='1'>
                    <tr>
-				     <td align='center' valign='middle' class='large_text'><br/><br/>Welcome to the Boy Scouts<br/>Counselor Database<br/><br/> <img src='./img/scout_logo.jpg' width='200' height='200' /><br/><br/>Please login to access or click search button to start.
+                     <td align='center' valign='middle' class='large_text'>
+                        <br/><br/>Welcome to the Boy Scouts<br/>Counselor Database<br/><br/>
+                        <img src='./img/scout_logo.jpg' width='200' height='200' />
+                        <br/><br/>" . $message . "
 					 </td>
 				   </tr>
 				 </table>";
@@ -67,7 +63,7 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
 <link href="./inc/scoutstyle.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<?php include("inc/header.php"); ?>
+<?php include "inc/header.php";?>
 <table bgcolor="#FFFFFF" height="500" width="100%"  align="center" cellpadding="2">
   <tr>
     <td valign="top" width="100%">
@@ -75,6 +71,6 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
     </td>
    </tr>
 </table>
-<?php include("inc/footer.php"); ?>
+<?php include "inc/footer.php";?>
 </body>
 </html>

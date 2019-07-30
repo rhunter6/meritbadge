@@ -5,9 +5,9 @@ class db
 	//error_reporting(E_ALL);
 	
 	var $host	= 'localhost';
-	var $user	= 'mb';
-	var $pass	= '1234';
-	var $db		= 'mb_counselors';
+	var $user	= 'nsdbsa_mb_c';
+	var $pass	= 'scouts101#';
+	var $db		= 'nsdbsa_mb_counselors';
 	var $connection; 	
 	var $data;	
 

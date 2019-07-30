@@ -9,7 +9,7 @@ $client_class = new clients($db->connection);
 session_start();
 
 //lock out
-if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id'])) {
+if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id']) and $_SESSION['role'] !== "Administrator") {
 	header("Location: ./index.php");
 }
 //delete 

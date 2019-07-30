@@ -34,11 +34,12 @@ $council = "";
 	
 
 //delete 
-if(isset($_GET['delete_id']) and $_GET['delete_id'] <> "") {
-$data = array();
-$data['list_id'] = $_GET['delete_id'];
-$view_list = $client_class->archiveClient($data);	
+if (isset($_GET['delete_id']) and $_GET['delete_id'] != "") {
+    $data = array();
+    $data['list_id'] = $_GET['delete_id'];
+    $view_list = $client_class->archiveClient($data);
 }
+
 //start build list
 $data = array();
 $data['limit1'] = $limit1;
@@ -71,9 +72,13 @@ if($view_list<>"") {
 		  $badges .= "</textarea>";
 		  //end badges
 		  $today = date("Y-m-d");
-		  if($v['council']=="YES") {$stamp = "<img src='./img/caution.png' width='20' height='20' valign='bottom' />"; } else {$stamp = "";}
+		  if($v['council']=="YES") {$stamp = "<img src='./img/council.jpg' width='38' height='20' valign='bottom' />"; } else {$stamp = "";}
 		   if($v['ytp_exp']<=$today) {$stamp_ex = "<img src='./img/alert.png' width='20' height='20' align='bottom' />"; } else {$stamp_ex = "";}
-		  $member_list .= "<td class='small_text' width='50%'>$stamp $v[first_name] $v[last_name] <br/>Phone: $v[phone]<br/>Email: $v[email]<br/><br/>District: $v[district_id]<br/>Unit: $v[troop_id]<br/>$stamp_ex YTP Exp: $v[ytp_exp] </br></td><td class='badge_text'>$badges</td><td  nowrap><img src='./img/edit_icon.ico' width='20' height='20' align='bottom' onClick='editPost($v[list_id])'/>&nbsp;&nbsp; <img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$v[list_id]\",\"$v[first_name] $v[last_name]\")'/> </td></tr><tr><td colspan='3'><hr></td></tr>";
+		  $member_list .= "<td class='small_text' width='50%'>$stamp $v[first_name] $v[last_name] <br/>Phone: $v[phone]<br/>Email: $v[email]<br/><br/>District: $v[district_id]<br/>Unit: $v[troop_id]<br/>$stamp_ex YTP Exp: $v[ytp_exp] </br></td><td class='badge_text'>$badges</td>";
+		  if ($_SESSION['role'] === "Administrator") {
+			  $member_list .= "<td  nowrap><img src='./img/edit_icon.ico' width='20' height='20' align='bottom' onClick='editPost($v[list_id])'/>&nbsp;&nbsp; <img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$v[list_id]\",\"$v[first_name] $v[last_name]\")'/> </td>";
+		  }
+		  $member_list .= "</tr><tr><td colspan='3'><hr></td></tr>";
 		
 	}
 $member_list .= "</table>";
@@ -86,18 +91,19 @@ $main_content = "<table width='100%'>
 				     <td> $member_list <br/>$page_nav  </td>
 				   </tr>
 				 </table>";
-				
-//form stuff
-    $data = array();
-    $agentlist = $client_class->viewBadges($data);
-	$badge_select = "<select name='badge_select' id='badge_select'>";
-	$badge_select .= "<option value='' >Select</option>";
-	foreach ($agentlist as $k=>$v) {
-	 if($_GET['badge_select'] == $v['badge_id'] and $_GET['badge_select'] != '') { $pick_select = "selected ='selected'"; } else { $pick_select = ""; }
-		$badge_select .= "<option value='$v[badge_id]' $pick_select>$v[badge_name]</option>";
-	}
-	$badge_select .= "</select>";
 
+//form stuff
+$data = array();
+$agentlist = $client_class->viewBadges($data);
+$badge_select = "<select name='badge_select' id='badge_select'>";
+$badge_select .= "<option value='' >Select</option>";
+foreach ($agentlist as $k => $v) {
+    if ($_GET['badge_select'] == $v['badge_id'] and $_GET['badge_select'] != '') {$pick_select = "selected ='selected'";} else { $pick_select = "";}
+    $badge_select .= "<option value='$v[badge_id]' $pick_select>$v[badge_name]</option>";
+}
+$badge_select .= "</select>";
+
+$admin_footer = "<img src='./img/edit_icon.ico' width='15' height='15' align='bottom'/> = Edit <img src='./img/sqdelete.png' width='15' height='15' align='bottom'/> = Delete";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -143,7 +149,8 @@ function editPost(list_id) {
   <tr>
     <td valign="top" width="100%" class="small_text">
      <?php echo $main_content; ?><br/>
-     <img src='./img/caution.png' width='15' height='15' valign='bottom' /> = Counsel <img src='./img/alert.png' width='15' height='15' align='bottom' /> = Expired <img src='./img/edit_icon.ico' width='15' height='15' align='bottom'/> = Edit <img src='./img/sqdelete.png' width='15' height='15' align='bottom'/> = Delete
+     <img src='./img/council.jpg' width='38' height='20' valign='bottom' /> = Counsel <img src='./img/alert.png' width='15' height='15' align='bottom' /> = Expired 
+	 <?php if ($_SESSION['role'] === "Administrator") { echo $admin_footer;} ?>
     </td>
    </tr>
 </table>

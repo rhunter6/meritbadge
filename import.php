@@ -10,7 +10,7 @@ $client_class = new clients($db->connection);
 session_start();
 
 //lock out
-if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id'])) {
+if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id']) and $_SESSION['role'] !== "Administrator") {
 	header("Location: ./index.php");
 }
 
@@ -30,8 +30,8 @@ if (($handle = fopen("./inc/Merit.csv", "r")) !== FALSE) {
 		//if($line==1) { $import .= "$data[$c]<br /><br />"; }
 		if($line==2) {  $import .= "$data[$c] $data2[district_id]<br />"; $data2['district_id'] = $data[$c]; }
 		if($line==3) { $str = str_replace("nounit", "", $data[$c]); $import .= "$str <br />";  $data2['troop_id'] = $str; }
-		if($line==4) { $import .= "$data[$c]<br />"; $data2['first_name'] = $data[$c];}
-		if($line==5) { $import .= "$data[$c]<br />"; $data2['last_name'] = $data[$c];}
+		if($line==4) { $import .= "$data[$c]<br />"; $data2['last_name'] = $data[$c];}
+		if($line==5) { $import .= "$data[$c]<br />"; $data2['first_name'] = $data[$c];}
 		//if($line==6) { $import .= "$data[$c]<br /><br />"; }
 		//if($line==7) { $import .= "$data[$c]<br /><br />"; }
 		//if($line==8) { $import .= "$data[$c]<br /><br />"; }
@@ -40,10 +40,14 @@ if (($handle = fopen("./inc/Merit.csv", "r")) !== FALSE) {
 		if($line==11) { $import .= "$data[$c]<br />"; $data2['phone'] = $data[$c];}
 		if($line==12) { $import .= "$data[$c]<br />"; $data2['email'] = $data[$c]; if($last_email == $data[$c]) { $last_email = $data[$c]; $repeat = 1; } else { $last_email = $data[$c]; $repeat = 0; } }
 		//if($line==13) { $import .= "$data[$c]<br /><br />"; }
-		if($line==14) { $import .= "$data[$c]<br />"; $next_badge = $data[$c]; }
-		if($line==15) { if($data[$c]=="Any Scout from any unit") {$import .= "YES<br />"; $data2['council'] = "YES"; } else {$import .= "NO<br />"; $data2['council'] = "NO"; } }
-		if($line==16) { $date = $data[$c];
-$ndate = date('Y-m-d', strtotime($date)); $import .= "$data[$c] = $ndate<br />"; $data2['ytp_exp'] = $ndate; }
+		if($line==13) { $import .= "$data[$c]<br />"; $next_badge = $data[$c]; }
+		if($line==14) { if($data[$c]=="Any Scout from any unit") {$import .= "YES<br />"; $data2['council'] = "YES"; } else {$import .= "NO<br />"; $data2['council'] = "NO"; } }
+		if($line==15) { $date = $data[$c];
+$ndate = date_create($date); 
+date_add($ndate, date_interval_create_from_date_string('2 years'));
+$fdateString = date_format($ndate, 'Y-m-d');
+$import .= "$data[$c] = $fdateString<br />"; 
+$data2['ytp_exp'] = $fdateString; }
 		//if($line==17) { $import .= "$data[$c]<br /><br />"; }
 		//if($line==18) { $import .= "$data[$c]<br /><br />"; }
 		// echo $data[$c] . "=$row $line<br />\n";
