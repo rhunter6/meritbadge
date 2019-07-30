@@ -29,7 +29,7 @@ class clients
                 mysqli_real_escape_string($this->connection, $data['council']),
                 mysqli_real_escape_string($this->connection, $data['ytp_exp']));
             $insert_result = mysqli_query($this->connection, $q) or die(mysql_error());
-            $result = mysqli_insert_id();
+            $result = mysqli_insert_id($this->connection);
 
         } else { $result = "EXIST";}
 
