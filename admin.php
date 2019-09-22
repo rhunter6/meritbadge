@@ -1,63 +1,69 @@
 <?php
 //set up includes
-include('inc/db.class.php');
-include('inc/client.class.php');
-include('./inc/extra.class.php');
+include 'inc/db.class.php';
+include 'inc/client.class.php';
+include './inc/extra.class.php';
 //set up classes
 $db = new db();
 $client_class = new clients($db->connection);
 session_start();
 
 //lock out
-if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id']) and $_SESSION['role'] !== "Administrator") {
-	header("Location: ./index.php");
+if (!isset($_SESSION['scout_session'])
+    and !isset($_SESSION['client_id'])
+    and $_SESSION['role'] !== "Administrator") {
+    header("Location: ./index.php");
 }
-//delete 
-if(isset($_GET['delete_id']) and $_GET['delete_id'] <> "") {
-$data = array();
-$data['client_id'] = $_GET['delete_id'];
-$delete_list = $client_class->archiveAdmin($data);	
+//delete
+if (isset($_GET['delete_id']) and $_GET['delete_id'] != "") {
+    $data = array();
+    $data['client_id'] = $_GET['delete_id'];
+    $delete_list = $client_class->archiveAdmin($data);
 }
 
 //add user
-	if($_POST['add_admin']=="YES") {
-	
-	$errors = "";
-	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
-		$errors .= "E-mail is not valid<br/>";
-	}
-	if(empty($_POST['first_name'])) { $errors .= "First Name is not valid<br/>";}
-	if(empty($_POST['last_name'])) { $errors .= "Last Name is not valid<br/>";} 
-	if(empty($_POST['password'])) { $errors .= "Password is not valid<br/>";} 
-			
-	if(empty($errors)) {	
-	$data = array();
-	$data['email'] = $_POST['email'];
-	$data['first_name'] = $_POST['first_name'];
-	$data['last_name'] = $_POST['last_name'];
-	$data['password'] = $_POST['password'];
-	$edit_done = $client_class->addAdmin($data);
-	//echo $edit_done;
-	if($edit_done != "EXIST") {
-					
-		 $goto_url = "admin.php?page_result=$edit_done";
-		 header("Location: $goto_url");
-	  }
-	 	  
-	 }
-	}
+if ($_POST['add_admin'] == "YES") {
 
+    $errors = "";
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors .= "E-mail is not valid<br/>";
+    }
+    if (empty($_POST['first_name'])) {
+        $errors .= "First Name is not valid<br/>";
+    }
+    if (empty($_POST['last_name'])) {
+        $errors .= "Last Name is not valid<br/>";
+    }
+    if (empty($_POST['password'])) {
+        $errors .= "Password is not valid<br/>";
+    }
 
-//signup form			 
+    if (empty($errors)) {
+        $data = array();
+        $data['email'] = $_POST['email'];
+        $data['first_name'] = $_POST['first_name'];
+        $data['last_name'] = $_POST['last_name'];
+        $data['password'] = $_POST['password'];
+        $edit_done = $client_class->addAdmin($data);
+        //echo $edit_done;
+        if ($edit_done != "EXIST") {
+            $goto_url = "admin.php?page_result=$edit_done";
+            header("Location: $goto_url");
+        }
+    }
+}
 
-if($edit_done=="EXIST") { $error_dup = "</br>Sorry that email is already is use."; }
+//signup form
 
+if ($edit_done == "EXIST") {
+    $error_dup = "</br>Sorry that email is already is use.";
+}
 
-//create form	 
+//create form
 $signup_form = "
 <table >
   <tr>
-  
+
     <td valign='top'>
 <form action=\"admin.php\" method=\"post\" enctype=\"application/x-www-form-urlencoded\" name=\"add_admin\">
     <table class=\"bubble\" width=\"400\" cellpadding='2'>
@@ -92,14 +98,14 @@ $signup_form = "
   </td>
  </tr>
 </table>
-    </form>";			 
+    </form>";
 //end form
 
 $admin_list = $client_class->listAdmin($data);
-foreach($admin_list as $d=>$e) { 
-	      $user_list .= "<img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$e[client_id]\", \"$e[first_name] $e[last_name]\")'/> $e[first_name] $e[last_name] $e[email] </br><hr></br>";
-		  
-		}
+foreach ($admin_list as $d => $e) {
+    $user_list .= "<img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$e[client_id]\", \"$e[first_name] $e[last_name]\")'/> $e[first_name] $e[last_name] $e[email] </br><hr></br>";
+
+}
 //main content
 $main_content = "<table width='100%' class='small_text' cellpadding='1'>
                    <tr>
@@ -109,7 +115,6 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
 					 </td>
 				   </tr>
 				 </table>";
-
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -125,8 +130,8 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
 function deletePost(client_id, client_name) {
     var ask = window.confirm("Confirm Delete for "+client_name);
     if (ask) {window.location.href = "./admin.php?delete_id="+client_id;
-        
-    
+
+
 window.alert("This post was successfully deleted.");
     }
 }
@@ -134,7 +139,7 @@ window.alert("This post was successfully deleted.");
 <link href="./inc/scoutstyle.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<?php include("inc/header.php"); ?>
+<?php include "inc/header.php";?>
 <table bgcolor="#FFFFFF" height="500" width="100%"  align="center" cellpadding="2">
   <tr>
     <td valign="top" width="100%">
@@ -142,6 +147,6 @@ window.alert("This post was successfully deleted.");
     </td>
    </tr>
 </table>
-<?php include("inc/footer.php"); ?>
+<?php include "inc/footer.php";?>
 </body>
 </html>
