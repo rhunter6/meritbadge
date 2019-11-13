@@ -35,9 +35,6 @@ if ($_POST['add_client'] == "YES") {
     if (empty($_POST['district_id'])) {
         $errors .= "District is not valid<br/>";
     }
-    if (empty($_POST['troop_id'])) {
-        $errors .= "Troop is not valid<br/>";
-    }
     if (empty($_POST['ytp_exp'])) {
         $errors .= "YTP Exp is not valid<br/>";
     }

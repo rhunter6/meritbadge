@@ -20,7 +20,6 @@ if (!isset($_SESSION['scout_session'])
 
 //add user
 if ($_POST['add_client'] == "YES") {
-
     $errors = "";
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         $errors .= "E-mail is not valid<br/>";
@@ -36,9 +35,6 @@ if ($_POST['add_client'] == "YES") {
     }
     if (empty($_POST['district_id'])) {
         $errors .= "District is not valid<br/>";
-    }
-    if (empty($_POST['troop_id'])) {
-        $errors .= "Troop is not valid<br/>";
     }
     if (empty($_POST['ytp_exp'])) {
         $errors .= "YTP Exp is not valid<br/>";
@@ -59,8 +55,7 @@ if ($_POST['add_client'] == "YES") {
         $data['council'] = $_POST['council'];
         $data['list_id'] = $_POST['list_id'];
         $edit_done = $client_class->editClient($data);
-        //echo $edit_done;
-        //if(isset($edit_done) and $edit_done<>"EXIST") {
+        //if(isset($edit_done) and $edit_done) {
         //foreach($_POST['sel'] as $selectedOption) {
         // $data_b = array();
         //$data_b['t_main_id'] = $edit_done;
@@ -101,7 +96,9 @@ if ($v != "" and $_GET['edit_id'] != "") {
     $data3['list_id'] = $v['list_id'];
     $badge_train = $client_class->viewLinkBadges($data3);
     if ($badge_train != "NULL") {
-        foreach ($badge_train as $k4 => $v4) {$badges[] = "$v4[badge_name]";}
+        foreach ($badge_train as $k4 => $v4) {
+            $badges[] = "$v4[badge_name]";
+        }
     }
 }
 // end build list
@@ -117,7 +114,7 @@ if ($badge_options != "") {
     foreach ($badge_options as $d => $e) {
         $ct++;
         if ($badges != "") {
-            if (in_array($e[badge_name], $badges)) {
+            if (in_array($e['badge_name'], $badges)) {
                 $checked = "checked='checked'";
                 $box_class = "class='check_box'";
             } else {
@@ -155,7 +152,7 @@ $signup_form = "
   <tr>
 
     <td valign='top'>
-<form action=\"trainers_edit_b.php?edit_id=$v[list_id]\" method=\"post\" enctype=\"application/x-www-form-urlencoded\" name=\"edit_user2\">
+<form action=\"trainers_edit.php?edit_id=$v[list_id]\" method=\"post\" enctype=\"application/x-www-form-urlencoded\" name=\"edit_user2\">
     <table class=\"bubble\" width=\"400\" cellpadding='2'>
         <tr>
           <td colspan='2'>
