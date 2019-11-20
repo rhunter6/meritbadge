@@ -8,8 +8,6 @@ include 'inc/client.class.php';
 $db = new db();
 $client_class = new clients($db->connection);
 
-var_dump($_GET);
-
 // See if the user logged out.  Login_error=YES means show logout message.
 if ($_GET['logout_session'] == "YES") {
     session_destroy();
