@@ -1,9 +1,9 @@
 <?php
 
 //set up includes
-include('./inc/db.class.php');
-include('./inc/client.class.php');
-include('./inc/extra.class.php');
+include './inc/db.class.php';
+include './inc/client.class.php';
+include './inc/extra.class.php';
 
 //set up classes
 $db = new db();
@@ -11,91 +11,97 @@ $client_class = new clients($db->connection);
 session_start();
 
 //lock out
-if(!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id']) and $_SESSION['role'] !== "Administrator") {
-	header("Location: ./index.php");
+if (!isset($_SESSION['scout_session'])
+    and !isset($_SESSION['client_id'])
+    and $_SESSION['role'] !== "Administrator") {
+    header("Location: ./index.php");
 }
 
 //add user
-	if($_POST['add_client']=="YES") {
-	
-	$errors = "";
-	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
-		$errors .= "E-mail is not valid<br/>";
-	}
-	if(empty($_POST['first_name'])) { $errors .= "First Name is not valid<br/>";}
-	if(empty($_POST['last_name'])) { $errors .= "Last Name is not valid<br/>";} 
-	if(empty($_POST['phone'])) { $errors .= "Phone is not valid<br/>";} 
-	if(empty($_POST['district_id'])) { $errors .= "District is not valid<br/>";} 
-	if(empty($_POST['troop_id'])) { $errors .= "Troop is not valid<br/>";}
-	if(empty($_POST['ytp_exp'])) { $errors .= "YTP Exp is not valid<br/>";} 
-	if(empty($_POST['council'])) { $errors .= "Council is not valid<br/>";}
-	if(isset($errors) and $errors<>"") { $errors .= "</br>You Must Reselect All Badges<br/>"; }
-		
-	if(empty($errors)) {	
-	$data = array();
-	$data['email'] = $_POST['email'];
-	$data['first_name'] = $_POST['first_name'];
-	$data['last_name'] = $_POST['last_name'];
-	$data['phone'] = $_POST['phone'];
-	$data['district_id'] = $_POST['district_id'];
-	$data['troop_id'] = $_POST['troop_id'];
-	$data['ytp_exp'] = $_POST['ytp_exp'];
-	$data['council'] = $_POST['council'];
-	$edit_done = $client_class->addClient($data);
-	//echo $edit_done;
-	if(isset($edit_done) and $edit_done<>"EXIST") {	
-	  foreach($_POST['sel'] as $selectedOption) {
-      $data_b = array();
-	  $data_b['t_main_id'] = $edit_done;
-	  $data_b['t_badge_id'] = $selectedOption;	
-      $add_badge = $client_class->addBadges($data_b);
-	//echo $selectedOption."\n";
-	}
-	
-	}
- 
-	
-	
-	if($edit_done != "EXIST") {
-					
-		 $goto_url = "trainers.php?page_result=$edit_done";
-		 header("Location: $goto_url");
-	  }
-	  else { 
-	    		
-	   // $goto_url = "trainers.php?page_result=$edit_done";
-		//header("Location: $goto_url");
-	  }
-	  
-	 }
-	}
+if ($_POST['add_client'] == "YES") {
+    $errors = "";
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors .= "E-mail is not valid<br/>";
+    }
+    if (empty($_POST['first_name'])) {
+        $errors .= "First Name is not valid<br/>";
+    }
+    if (empty($_POST['last_name'])) {
+        $errors .= "Last Name is not valid<br/>";
+    }
+    if (empty($_POST['phone'])) {
+        $errors .= "Phone is not valid<br/>";
+    }
+    if (empty($_POST['district_id'])) {
+        $errors .= "District is not valid<br/>";
+    }
+    if (empty($_POST['ytp_exp'])) {
+        $errors .= "YTP Exp is not valid<br/>";
+    }
+    if (empty($_POST['council'])) {
+        $errors .= "Council is not valid<br/>";
+    }
+    if (isset($errors) and $errors != "") {
+        $errors .= "</br>You Must Reselect All Badges<br/>";
+    }
 
+    if (empty($errors)) {
+        $data = array();
+        $data['email'] = $_POST['email'];
+        $data['first_name'] = $_POST['first_name'];
+        $data['last_name'] = $_POST['last_name'];
+        $data['phone'] = $_POST['phone'];
+        $data['district_id'] = $_POST['district_id'];
+        $data['troop_id'] = $_POST['troop_id'];
+        $data['ytp_exp'] = $_POST['ytp_exp'];
+        $data['council'] = $_POST['council'];
+        $edit_done = $client_class->addClient($data);
+        //echo $edit_done;
+        if (isset($edit_done) and $edit_done != "EXIST") {
+            foreach ($_POST['sel'] as $selectedOption) {
+                $data_b = array();
+                $data_b['t_main_id'] = $edit_done;
+                $data_b['t_badge_id'] = $selectedOption;
+                $add_badge = $client_class->addBadges($data_b);
+                //echo $selectedOption."\n";
+            }
 
-//signup form			 
+        }
 
-if($edit_done=="EXIST") { $error_dup = "</br>Sorry that email is already is use.</br>You Must Reselect All Badges"; }
+        if ($edit_done != "EXIST") {
+            $goto_url = "trainers.php?page_result=$edit_done";
+            header("Location: $goto_url");
+        } else {
+            // $goto_url = "trainers.php?page_result=$edit_done";
+            //header("Location: $goto_url");
+        }
+    }
+}
+
+//signup form
+
+if ($edit_done == "EXIST") {
+    $error_dup = "</br>Sorry that email is already is use.</br>You Must Reselect All Badges";
+}
 // badge list start
 $data = array();
 $badge_options = $client_class->viewBadges($data);
 $ct = 0;
-if($badge_options<>"") {
-	
-	    $amen_list .= "Qualified Badges<br/>Control+ Click for Multiple Selections<br/><select name='sel[]' multiple title='selections' onfocus='this.size=10;' onblur='this.size=10;' 
+if ($badge_options != "") {
+    $amen_list .= "Qualified Badges<br/>Control+ Click for Multiple Selections<br/><select name='sel[]' multiple title='selections' onfocus='this.size=10;' onblur='this.size=10;'
         onchange='this.size=10; this.blur();'>";
-		foreach($badge_options as $d=>$e) { 
-	      $amen_list .= "<option value='$e[badge_id]'>$e[badge_name]</option>";
-		  
-		}
+    foreach ($badge_options as $d => $e) {
+        $amen_list .= "<option value='$e[badge_id]'>$e[badge_name]</option>";
+    }
 }
-		
-			
-	$amen_list .= "</select>";	
+
+$amen_list .= "</select>";
 //badge list end
-//create form	 
+//create form
 $signup_form = "
 <table >
   <tr>
-  
+
     <td valign='top'>
 <form action=\"trainers.php\" method=\"post\" enctype=\"application/x-www-form-urlencoded\" name=\"add_user\">
     <table class=\"bubble\" width=\"400\" cellpadding='2'>
@@ -150,26 +156,21 @@ $signup_form = "
  </tr>
 </table>
     </form>";
-			 
+
 //end form
-
-
 
 //start build list
 $v = $client_class->viewClient($_GET['page_result']);
 $member_list = "";
-if($v<>"") {
-		 
-		  $badges = "";
-		  $data3 = array();
-		  $data3['list_id'] = $v['list_id'];
-          $badge_train = $client_class->viewLinkBadges($data3);
-		  foreach($badge_train as $k4=>$v4) { $badges .= "<br/>$v4[badge_name]"; }
-	      $member_list .= "Last Entered:</br>$v[first_name] $v[last_name]<br/>Phone: $v[phone]<br/>Email: $v[email]<br/>Council: $v[council]<br/>District: $v[district_id]<br/>Troop: $v[troop_id]<br/>YTP Exp: $v[ytp_exp] $badges <br/><hr width='100%' /><br/>";
-		  	
+if ($v != "") {
+    $badges = "";
+    $data3 = array();
+    $data3['list_id'] = $v['list_id'];
+    $badge_train = $client_class->viewLinkBadges($data3);
+    foreach ($badge_train as $k4 => $v4) {$badges .= "<br/>$v4[badge_name]";}
+    $member_list .= "Last Entered:</br>$v[first_name] $v[last_name]<br/>Phone: $v[phone]<br/>Email: $v[email]<br/>Council: $v[council]<br/>District: $v[district_id]<br/>Troop: $v[troop_id]<br/>YTP Exp: $v[ytp_exp] $badges <br/><hr width='100%' /><br/>";
 
-    
-} else {   }
+} else {}
 // end build list
 //start main content
 $main_content = "<table width='100%' class='small_text' cellpadding='1'>
@@ -193,7 +194,7 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  
+
   <script>
   $(document).ready(function() {
     $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd'});
@@ -201,7 +202,7 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
   </script>
 </head>
 <body>
-<?php include("inc/header.php"); ?>
+<?php include "inc/header.php";?>
 <table bgcolor="#FFFFFF" height="500" width="100%"  align="center" cellpadding="2">
   <tr>
     <td valign="top" width="100%">
@@ -209,6 +210,6 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
     </td>
    </tr>
 </table>
-<?php include("inc/footer.php"); ?>
+<?php include "inc/footer.php";?>
 </body>
 </html>

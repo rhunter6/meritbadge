@@ -39,7 +39,6 @@ if ($_SESSION['scout_session'] === "YES") {
     $message = 'Please login to access.';
 }
 
-
 $main_content = "<table width='100%' class='small_text' cellpadding='1'>
                    <tr>
                      <td align='center' valign='middle' class='large_text'>
