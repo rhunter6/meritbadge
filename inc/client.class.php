@@ -86,7 +86,6 @@ class clients
 
     public function listClients($data)
     {
-        error_log("In listClients-1");
         if ($data['badge_id'] != 0) {
             $badge_search = "AND b.t_badge_id = '$data[badge_id]'";
         } else {
@@ -113,7 +112,6 @@ class clients
             $limit = "";
         }
 
-        error_log("In listClients-2");
         $q = "SELECT m.*, b.t_main_id FROM  badge_links b
 			      join main_list m on m.list_id = b.t_main_id
 			      where m.active = 'YES'
@@ -124,15 +122,12 @@ class clients
 				  GROUP BY m.list_id, b.t_main_id
 				  ORDER BY m.last_name
 				  $limit  ";
-        error_log("In listClients-3");
 
         $result = mysqli_query($this->connection, $q) or die(error_log(mysqli_error($this->connection)));
-        error_log("In listClients-4");
 
         while ($row = mysqli_fetch_assoc($result)) {
             $r[] = $row;
         }
-        error_log("In listClients-5");
 
         return $r;
     }
@@ -166,14 +161,13 @@ class clients
             $limit = "";
         }
 
-        $q = "SELECT * FROM  badge_links b
+        $q = "SELECT m.*, b.t_main_id FROM  badge_links b
 			      join main_list m on m.list_id = b.t_main_id
 			      where m.active = 'YES'
 				  $badge_search
 				  $district_search
-				  GROUP BY m.list_id, b.link_id
+				  GROUP BY m.list_id, b.t_main_id
 				    ";
-
         $result = mysqli_query($this->connection, $q) or die(mysqli_error($this->connection));
         $ct = 0;
         while ($row = mysqli_fetch_assoc($result)) {
