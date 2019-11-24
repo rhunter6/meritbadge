@@ -1,17 +1,14 @@
 <?php
 
-error_log("In log_home.php");
 //set up includes
 include './inc/db.class.php';
 include './inc/client.class.php';
 include './inc/extra.class.php';
-error_log("In log_home.php-A");
 
 //set up classes
 $db = new db();
 $client_class = new clients($db->connection);
 session_start();
-error_log("In log_home.php-B");
 
 //lock out
 if (!isset($_SESSION['scout_session']) and !isset($_SESSION['client_id'])) {
@@ -57,8 +54,6 @@ if (isset($_GET['delete_id']) and $_GET['delete_id'] != "") {
     $view_list = $client_class->archiveClient($data);
 }
 
-error_log("In log_home.php-C");
-
 //start build list
 $data = array();
 $data['limit1'] = $limit1;
@@ -67,9 +62,7 @@ $data['badge_id'] = $form_badge;
 $data['district_id'] = $district;
 $data['troop_id'] = $troop;
 $data['council_id'] = $council;
-error_log("In log_home.php-C1");
 $view_list = $client_class->listClients($data);
-error_log("In log_home.php-C2");
 //page controls
 $page = "./log_home.php";
 $getstr = "badge_select=$form_badge&district_id=$district&troop_id=$troop";
@@ -79,11 +72,9 @@ $data2['district_id'] = $district;
 $data2['troop_id'] = $troop;
 $data2['council_id'] = $council;
 $total = $client_class->listCount($data2);
-error_log("In log_home.php-C3");
 $page_nav = paginate($page, $getstr, $limit1, $limit2, $total);
 //create list
 $member_list = "<table width='70%' ><tr>";
-error_log("In log_home.php-D");
 
 if ($view_list != "") {
     foreach ($view_list as $k => $v) {
@@ -118,7 +109,6 @@ if ($view_list != "") {
 } else {
 
 }
-error_log("In log_home.php-E");
 // end build list
 //build main
 $main_content = "<table width='100%'>
@@ -143,7 +133,6 @@ foreach ($agentlist as $k => $v) {
 $badge_select .= "</select>";
 
 $admin_footer = "<img src='./img/edit_icon.ico' width='15' height='15' align='bottom'/> = Edit <img src='./img/sqdelete.png' width='15' height='15' align='bottom'/> = Delete";
-error_log("In log_home.php-F");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
