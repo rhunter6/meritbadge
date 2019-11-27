@@ -37,6 +37,9 @@ if ($_POST['add_admin'] == "YES") {
     if (empty($_POST['password'])) {
         $errors .= "Password is not valid<br/>";
     }
+    if (empty($_POST['role'])) {
+        $errors .= "Role is not valid<br/>";
+    }
 
     if (empty($errors)) {
         $data = array();
@@ -44,6 +47,7 @@ if ($_POST['add_admin'] == "YES") {
         $data['first_name'] = $_POST['first_name'];
         $data['last_name'] = $_POST['last_name'];
         $data['password'] = $_POST['password'];
+        $data['role'] = $_POST['role'];
         $edit_done = $client_class->addAdmin($data);
         //echo $edit_done;
         if ($edit_done != "EXIST") {
@@ -57,6 +61,10 @@ if ($_POST['add_admin'] == "YES") {
 
 if ($edit_done == "EXIST") {
     $error_dup = "</br>Sorry that email is already is use.";
+}
+//Set default role
+if (!isset($_POST['role'])) {
+    $_POST['role'] = "Viewer";
 }
 
 //create form
@@ -92,7 +100,30 @@ $signup_form = "
       <td><input name=\"password\" type=\"password\" value='$_POST[password]'/></td>
     </tr>
     <tr>
-	  <td colspan='2' align='center'><input name='ip_address' type='hidden' value='$_SERVER[REMOTE_ADDR]' /><input name='add_admin' type='hidden' value='YES' /><input type='submit' style='width:100px;' name='register' class='form_button' value='Register'/></td>
+      <td align=\"right\">Role:</td>
+      <td>
+        <input name=\"role\" type=\"radio\" value=\"Administrator\" ";
+
+if ($_POST['role'] == "Administrator") {
+    $signup_form .= "checked";
+}
+
+$signup_form .= " >Administrator
+        <input name=\"role\" type=\"radio\" value=\"Viewer\" ";
+
+if ($_POST['role'] == "Viewer") {
+    $signup_form .= "checked";
+}
+
+$signup_form .= " >Viewer
+      </td>
+    </tr>
+    <tr>
+      <td colspan='2' align='center'>
+        <input name='ip_address' type='hidden' value='$_SERVER[REMOTE_ADDR]' />
+        <input name='add_admin' type='hidden' value='YES' />
+        <input type='submit' style='width:100px;' name='register' class='form_button' value='Register'/>
+      </td>
 	</tr>
 </table>
   </td>
@@ -103,7 +134,8 @@ $signup_form = "
 
 $admin_list = $client_class->listAdmin($data);
 foreach ($admin_list as $d => $e) {
-    $user_list .= "<img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$e[client_id]\", \"$e[first_name] $e[last_name]\")'/> $e[first_name] $e[last_name] $e[email] </br><hr></br>";
+    $user_list .= "<img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deleteUser(\"$e[client_id]\", \"$e[first_name] $e[last_name]\")'/>
+        $e[first_name] $e[last_name] ($e[email]) - $e[role]</br><hr></br>";
 
 }
 //main content
@@ -127,12 +159,11 @@ $main_content = "<table width='100%' class='small_text' cellpadding='1'>
 <title>Boy Scout Badge Admin</title>
 <script src="./inc/scoutscripts.js"></script>
 <script>
-function deletePost(client_id, client_name) {
-    var ask = window.confirm("Confirm Delete for "+client_name);
-    if (ask) {window.location.href = "./admin.php?delete_id="+client_id;
-
-
-window.alert("This post was successfully deleted.");
+function deleteUser(client_id, client_name) {
+    var ask = window.confirm("Confirm delete for " + client_name);
+    if (ask) {
+        window.location.href = "./admin.php?delete_id=" + client_id;
+        window.alert("User " + client_name + " was successfully deleted.");
     }
 }
 </script>

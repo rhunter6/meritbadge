@@ -198,15 +198,18 @@ class clients
         $num_rows = mysqli_num_rows($check_result);
 
         if ($num_rows == 0) {
-            $q = sprintf("INSERT INTO control set email = '%s', first_name = '%s', last_name = '%s', password = '%s'",
+            $q = sprintf("INSERT INTO control set email = '%s', first_name = '%s', last_name = '%s', password = '%s', role = '%s' ",
                 mysqli_real_escape_string($this->connection, $data['email']),
                 mysqli_real_escape_string($this->connection, $data['first_name']),
                 mysqli_real_escape_string($this->connection, $data['last_name']),
-                md5($data['password']));
+                md5($data['password']),
+                $data['role'] == "Administrator" ? "Administrator" : "Viewer");
             $insert_result = mysqli_query($this->connection, $q) or die(mysqli_error($this->connection));
             $result = mysqli_insert_id($this->connection);
 
-        } else { $result = "EXIST";}
+        } else {
+            $result = "EXIST";
+        }
 
         return $result;
     }
