@@ -35,16 +35,16 @@ $troop = "";
 if (isset($_GET['troop_id'])) {
     $troop = $_GET['troop_id'];
 }
-$council = "";
+$council = "YES";
 if (isset($_GET['council_id'])) {
     $council = $_GET['council_id'];
-    if ($council == "YES") {
-        $form_yes = "selected='selected'";
-        $form_no = "";
-    } else {
-        $form_yes = "";
-        $form_no = "selected='selected'";
-    }
+}
+if ($council == "YES") {
+    $form_yes = "selected='selected'";
+    $form_no = "";
+} else {
+    $form_yes = "";
+    $form_no = "selected='selected'";
 }
 
 //delete
@@ -65,7 +65,7 @@ $data['council_id'] = $council;
 $view_list = $client_class->listClients($data);
 //page controls
 $page = "./log_home.php";
-$getstr = "badge_select=$form_badge&district_id=$district&troop_id=$troop";
+$getstr = "badge_select=$form_badge&district_id=$district&troop_id=$troop&council_id=$council";
 $data2 = array();
 $data2['badge_id'] = $form_badge;
 $data2['district_id'] = $district;
@@ -96,7 +96,9 @@ if ($view_list != "") {
         }
         if ($v['ytp_exp'] <= $today) {
             $stamp_ex = "<img src='./img/alert.png' width='20' height='20' align='bottom' />";
-        } else { $stamp_ex = "";}
+        } else {
+            $stamp_ex = "";
+        }
         $member_list .= "<td class='small_text' width='50%'>$stamp $v[first_name] $v[last_name] <br/>Phone: $v[phone]<br/>Email: $v[email]<br/><br/>District: $v[district_id]<br/>Unit: $v[troop_id]<br/>$stamp_ex YTP Exp: $v[ytp_exp] </br></td><td class='badge_text'>$badges</td>";
         if ($_SESSION['role'] === "Administrator") {
             $member_list .= "<td  nowrap><img src='./img/edit_icon.ico' width='20' height='20' align='bottom' onClick='editPost($v[list_id])'/>&nbsp;&nbsp; <img src='./img/sqdelete.png' width='20' height='20' align='bottom' onClick='deletePost(\"$v[list_id]\",\"$v[first_name] $v[last_name]\")'/> </td>";

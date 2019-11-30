@@ -135,36 +135,33 @@ class clients
     public function listCount($data)
     {
         if ($data['badge_id'] != 0) {
-            $badge_search = "AND b.t_badge_id = '$data[badge_id]'";
+            $badge_search = " AND b.t_badge_id = '$data[badge_id]'";
         } else {
             $badge_search = "";
         }
         if ($data['troop_id'] != "") {
-            $troop_search = "m.troop_id = '$data[troop_id]' AND ";
+            $troop_search = " AND m.troop_id = '$data[troop_id]'";
         } else {
             $troop_search = "";
         }
         if ($data['council_id'] == "YES") {
-            $council_search = "OR m.council = 'YES'";
+            $council_search = " AND m.council = 'YES'";
         } else {
             $council_search = "";
         }
 
         if ($data['district_id'] != "") {
-            $district_search = "AND ( ( $troop_search m.district_id = '$data[district_id]'  )  $council_search  ) ";
+            $district_search = " AND m.district_id = '$data[district_id]'";
         } else {
             $district_search = "";
-        }
-        if (($data['limit1'] >= 0) && ($data['limit2'] != 0)) {
-            $limit = " LIMIT " . $data['limit1'] . ", " . $data['limit2'];
-        } else {
-            $limit = "";
         }
 
         $q = "SELECT m.*, b.t_main_id FROM  badge_links b
 			      join main_list m on m.list_id = b.t_main_id
 			      where m.active = 'YES'
 				  $badge_search
+                  $troop_search
+                  $council_search
 				  $district_search
 				  GROUP BY m.list_id, b.t_main_id
 				    ";
