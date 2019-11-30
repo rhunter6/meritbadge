@@ -178,7 +178,7 @@ function editPost(list_id) {
   <tr>
     <td valign="top" width="100%" class="small_text">
      <?php echo $main_content; ?><br/>
-     <img src='./img/council.jpg' width='38' height='20' valign='bottom' /> = Counsel <img src='./img/alert.png' width='15' height='15' align='bottom' /> = Expired
+     <img src='./img/council.jpg' width='38' height='20' valign='bottom' /> = Council <img src='./img/alert.png' width='15' height='15' align='bottom' /> = Expired
 	 <?php if ($_SESSION['role'] === "Administrator") {echo $admin_footer;}?>
     </td>
    </tr>
