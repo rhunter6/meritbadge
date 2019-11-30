@@ -12,8 +12,9 @@ class clients
     // start main merit badge counselor functions
     public function addClient($data)
     {
-        $check_q = sprintf("SELECT email from main_list WHERE email = '%s'",
-            mysqli_real_escape_string($this->connection, $data['email']));
+        $check_q = sprintf("SELECT email from main_list WHERE email = '%s' AND troop_id = '%s'",
+            mysqli_real_escape_string($this->connection, $data['email']),
+            mysqli_real_escape_string($this->connection, $data['troop_id']));
         $check_result = mysqli_query($this->connection, $check_q)
         or die(mysqli_error($this->connection));
         $num_rows = mysqli_num_rows($check_result);
@@ -70,8 +71,9 @@ class clients
      */
     public function findClient($data)
     {
-        $q = sprintf("SELECT list_id from main_list WHERE email = '%s'",
-            mysqli_real_escape_string($this->connection, $data['email']));
+        $q = sprintf("SELECT list_id from main_list WHERE email = '%s' AND troop_id = '%s'",
+            mysqli_real_escape_string($this->connection, $data['email']),
+            mysqli_real_escape_string($this->connection, $data['troop_id']));
         $query_result = mysqli_query($this->connection, $q) or die(mysqli_error($this->connection));
         $num_rows = mysqli_num_rows($query_result);
         if ($num_rows == 1) {

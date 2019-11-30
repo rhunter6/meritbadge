@@ -17,6 +17,10 @@ if (!isset($_SESSION['scout_session'])
 }
 
 $data2 = array();
+$last_row = array();
+$last_row['email'] = "";
+$last_row['troop_id'] = "";
+$repeat = 0;
 if (($handle = fopen("./inc/Merit.csv", "r")) !== false) {
     // Skip the first line
     $data = fgetcsv($handle, 1000, ",");
@@ -54,13 +58,6 @@ if (($handle = fopen("./inc/Merit.csv", "r")) !== false) {
             if ($line == 7) {
                 $import .= "$data[$c]<br />";
                 $data2['email'] = $data[$c];
-                if ($last_email == $data[$c]) {
-                    $last_email = $data[$c];
-                    $repeat = 1;
-                } else {
-                    $last_email = $data[$c];
-                    $repeat = 0;
-                }
             }
             if ($line == 8) {
                 $import .= "$data[$c]<br />";
@@ -87,6 +84,12 @@ if (($handle = fopen("./inc/Merit.csv", "r")) !== false) {
             //get badge id number
             $badge_id = $client_class->viewBadges_id($next_badge);
         }
+        if ($last_row['email'] == $data2['email'] && $last_row['troop_id'] == $data2['troop_id']) {
+            $repeat = 1;
+        } else {
+            $repeat = 0;
+        }
+        $last_row = $data2;
         if ($repeat == 0) {
             // Save user and first badge
             echo "<hr><br />$import<br />$next_badge - $badge_id[badge_id]<br/>";
